@@ -3,6 +3,8 @@ var express = require('express');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 
+var usuarioController = require('./controllers/usuario');
+
 var config = require('./config.json');
 
 // Connect to beerlocker MongoDB
@@ -20,6 +22,9 @@ app.use(bodyParser.urlencoded({
 // Create our express router
 var router = express.Router();
 
+router.route('/usuarios')
+    .post(usuarioController.postUsuarios)
+    .get(usuarioController.getUsuarios);
 
 // Register all our router with /api
 app.use('/api', router);
