@@ -1,3 +1,5 @@
+var bcrypt = require('bcrypt-nodejs');
+
 // Lista todos os usuarios
 exports.getUsuarios = function(req, res) {
     req.getConnection(function(err, connection) {
@@ -20,11 +22,25 @@ exports.postUsuarios = function(req, res) {
             res.status(400).send(err);
 
         var data = req.body;
-        connection.query('INSERT INTO Usuario SET ? ', data, function(err, rows) {
+
+        // aplica o hash na senha
+        bcrypt.genSalt(5, function(err, salt) {
             if (err)
                 res.status(400).send(err);
 
-            res.json({'message': 'Usuário adicionado com sucesso!'});
+            bcrypt.hash(data.password, salt, null, function(err, hash) {
+                if (err)
+                    res.status(400).send(err);
+
+                data.password = hash;
+
+                connection.query('INSERT INTO Usuario SET ? ', data, function(err, rows) {
+                    if (err)
+                        res.status(400).send(err);
+
+                    res.json({'message': 'Usuário adicionado com sucesso!'});
+                });
+            });
         });
     });
 };
@@ -52,11 +68,35 @@ exports.putUsuario = function(req, res) {
         if (err)
             res.status(400).send(err);
 
-        connection.query('UPDATE Usuario SET ? WHERE id = ?', [req.body, req.params.id], function(err, rows) {
+        var data = req.body;
+
+        // aplica o hash na senha se necessário
+        bcrypt.genSalt(5, function(err, salt) {
             if (err)
                 res.status(400).send(err);
 
-            res.json(rows);
+            if (data.password) {
+                bcrypt.hash(data.password, salt, null, function(err, hash) {
+                    if (err)
+                        res.status(400).send(err);
+
+                    data.password = hash;
+
+                    connection.query('UPDATE Usuario SET ? WHERE id = ?', [data, req.params.id], function(err, rows) {
+                        if (err)
+                            res.status(400).send(err);
+
+                        res.json(rows);
+                    });
+                });
+            } else {
+                connection.query('UPDATE Usuario SET ? WHERE id = ?', [data, req.params.id], function(err, rows) {
+                    if (err)
+                        res.status(400).send(err);
+
+                    res.json(rows);
+                });
+            }
         });
     });
 };
