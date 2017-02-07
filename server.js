@@ -26,6 +26,11 @@ router.route('/usuarios')
     .post(usuarioController.postUsuarios)
     .get(usuarioController.getUsuarios);
 
+router.route('/usuarios/:id')
+    .get(usuarioController.getUsuario)
+    .put(usuarioController.putUsuario)
+    .delete(usuarioController.deleteUsuario);
+
 // Register all our router with /api
 app.use('/api', router);
 
