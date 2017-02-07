@@ -7,7 +7,7 @@ exports.postUsuarios = function(req, res) {
 
     usuario.save(function(err) {
         if (err)
-            res.send(err)
+            res.status(400).send(err)
 
         res.json({ message: "Usuário adicionado com sucesso!" });
     });
@@ -17,7 +17,7 @@ exports.postUsuarios = function(req, res) {
 exports.getUsuarios = function(req, res) {
     Usuario.find(function(err, usuarios) {
         if (err)
-            res.send(err);
+            res.status(400).send(err);
 
         res.json(usuarios);
     });
@@ -26,7 +26,7 @@ exports.getUsuarios = function(req, res) {
 exports.getUsuario = function(req, res) {
     Usuario.findById(req.params.id, function(err, usuario) {
         if (err)
-            res.send(err);
+            res.status(400).send(err);
 
         res.json(usuario);
     });
@@ -37,12 +37,12 @@ exports.putUsuario = function(req, res) {
     // Procura o usuario específico
     Usuario.findById(req.params.id, function(err, usuario) {
         if (err)
-            res.send(err);
+            res.status(400).send(err);
 
         usuario.set(req.body);
         usuario.save(function(err) {
             if (err)
-                res.send(err);
+                res.status(400).send(err);
 
             res.json(usuario);
         });
@@ -53,7 +53,7 @@ exports.putUsuario = function(req, res) {
 exports.deleteUsuario = function(req, res) {
     Usuario.findByIdAndRemove(req.params.id, req.body, function(err, usuario) {
         if (err)
-            res.send(err);
+            res.status(400).send(err);
 
         res.json(usuario);
     });
@@ -63,13 +63,13 @@ exports.deleteUsuario = function(req, res) {
 exports.checkUsuario = function(req, res) {
     Usuario.findOne({ username: req.body.username }, function (err, usuario) {
         if (err)
-            res.send(err);
+            res.status(400).send(err);
 
         // verifica se encontrou o usuario
         if (usuario) {
             usuario.checkPassword(req.body.password, function(err, isMatch) {
                 if (err)
-                    res.send(err);
+                    res.status(400).send(err);
 
                 if (isMatch) {
                     res.json({auth: true, usuario: usuario});

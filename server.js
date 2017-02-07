@@ -37,6 +37,10 @@ router.route('/usuarios/check')
 // Register all our router with /api
 app.use('/api', router);
 
+function errorHandler(err, req, res, next) {
+    res.status(500);
+    res.render('error', { error: err });
+}
 
 /** SERVER START **/
 
