@@ -1,0 +1,19 @@
+{
+  "name": "instaservice-usuarios",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/esdrasbrz/instaservice-usuarios.git"
+  },
+  "author": "esdrasbrz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/esdrasbrz/instaservice-usuarios/issues"
+  },
+  "homepage": "https://github.com/esdrasbrz/instaservice-usuarios#readme"
+}
