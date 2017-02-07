@@ -165,3 +165,36 @@ exports.checkUsuario = function(req, res) {
         });
     });
 };
+
+
+// retorna todos os usuários que são seguidos
+exports.getSeguindo = function(req, res) {
+    req.getConnection(function(err, connection) {
+        if (err)
+            res.status(400).send(err);
+
+        connection.query('SELECT u.id, u.username, u.nome, u.bio FROM Usuario u, ArestaUsuario a ' +
+            'WHERE a.origem = ? and u.id = a.destino', [req.params.id], function(err, rows) {
+            if (err)
+                res.status(400).send(err);
+
+            res.json(rows);
+        });
+    });
+};
+
+// retorna todos os seguidores
+exports.getSeguidores = function(req, res) {
+    req.getConnection(function(err, connection) {
+        if (err)
+            res.status(400).send(err);
+
+        connection.query('SELECT u.id, u.username, u.nome, u.bio FROM Usuario u, ArestaUsuario a ' +
+            'WHERE a.destino = ? and u.id = a.origem', [req.params.id], function(err, rows) {
+            if (err)
+                res.status(400).send(err);
+
+            res.json(rows);
+        });
+    });
+};

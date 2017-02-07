@@ -42,6 +42,12 @@ router.route('/usuarios/:id')
     .put(usuarioController.putUsuario)
     .delete(usuarioController.deleteUsuario);
 
+router.route('/usuarios/:id/seguindo')
+    .get(usuarioController.getSeguindo);
+
+router.route('/usuarios/:id/seguidores')
+    .get(usuarioController.getSeguidores);
+
 router.route('/usuarios/check')
     .post(usuarioController.checkUsuario);
 
