@@ -1,0 +1,8 @@
+{
+    "server": {
+        "port": 3001
+    },
+    "bd": {
+        "url": "mongodb://localhost:27017/instaservice"
+    }
+}

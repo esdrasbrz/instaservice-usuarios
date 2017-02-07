@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/esdrasbrz/instaservice-usuarios/issues"
   },
-  "homepage": "https://github.com/esdrasbrz/instaservice-usuarios#readme"
+  "homepage": "https://github.com/esdrasbrz/instaservice-usuarios#readme",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.16.0",
+    "express": "^4.14.1",
+    "mongoose": "^4.8.1"
+  }
 }
