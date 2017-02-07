@@ -134,24 +134,30 @@ exports.deleteUsuario = function(req, res) {
 
 // funcao para checar o login do usuario, recebendo em POST parametros username e password
 exports.checkUsuario = function(req, res) {
-    Usuario.findOne({ username: req.body.username }, function (err, usuario) {
+    req.getConnection(function(err, connection) {
         if (err)
             res.status(400).send(err);
 
-        // verifica se encontrou o usuario
-        if (usuario) {
-            usuario.checkPassword(req.body.password, function(err, isMatch) {
-                if (err)
-                    res.status(400).send(err);
+        connection.query('SELECT * FROM Usuario WHERE username = ?', [req.body.username], function(err, rows) {
+            if (err)
+                res.status(400).send(err);
 
-                if (isMatch) {
-                    res.json({auth: true, usuario: usuario});
-                } else {
-                    res.json({auth: false});
-                }
-            });
-        } else {
-            res.json({auth: false});
-        }
+            if (rows.length != 1) {
+                res.json({ auth: false });
+            } else {
+                // checa a senha
+                usuario = rows[0];
+                bcrypt.compare(req.body.password, usuario.password, function(err, isMatch) {
+                    if (err)
+                        res.status(400).send(err);
+
+                    if (isMatch) {
+                        res.json({ auth: true, usuario: usuario });
+                    } else {
+                        res.json({ auth: false });
+                    }
+                })
+            }
+        });
     });
 };
