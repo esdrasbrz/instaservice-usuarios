@@ -5,6 +5,7 @@ var connection = require('express-myconnection');
 var bodyParser = require('body-parser');
 
 var usuarioController = require('./controllers/usuario');
+var arestaController = require('./controllers/aresta');
 
 var config = require('./config.json');
 
@@ -43,6 +44,14 @@ router.route('/usuarios/:id')
 
 router.route('/usuarios/check')
     .post(usuarioController.checkUsuario);
+
+
+router.route('/arestas')
+    .get(arestaController.getArestas);
+
+router.route('/arestas/:origem/:destino/')
+    .post(arestaController.postAresta)
+    .delete(arestaController.deleteAresta);
 
 // Register all our router with /api
 app.use('/api', router);

@@ -1,3 +1,7 @@
+/**
+ * Controller de gerenciamento de usuários
+ */
+
 var bcrypt = require('bcrypt-nodejs');
 
 // Lista todos os usuarios
