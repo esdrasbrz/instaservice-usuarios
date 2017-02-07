@@ -31,6 +31,9 @@ router.route('/usuarios/:id')
     .put(usuarioController.putUsuario)
     .delete(usuarioController.deleteUsuario);
 
+router.route('/usuarios/check')
+    .post(usuarioController.checkUsuario);
+
 // Register all our router with /api
 app.use('/api', router);
 

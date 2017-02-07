@@ -58,3 +58,27 @@ exports.deleteUsuario = function(req, res) {
         res.json(usuario);
     });
 };
+
+// funcao para checar o login do usuario, recebendo em POST parametros username e password
+exports.checkUsuario = function(req, res) {
+    Usuario.findOne({ username: req.body.username }, function (err, usuario) {
+        if (err)
+            res.send(err);
+
+        // verifica se encontrou o usuario
+        if (usuario) {
+            usuario.checkPassword(req.body.password, function(err, isMatch) {
+                if (err)
+                    res.send(err);
+
+                if (isMatch) {
+                    res.json({auth: true, usuario: usuario});
+                } else {
+                    res.json({auth: false});
+                }
+            });
+        } else {
+            res.json({auth: false});
+        }
+    });
+};
