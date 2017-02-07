@@ -1,14 +1,12 @@
 // Get the packages we need
 var express = require('express');
-var mongoose = require('mongoose');
+var mysql = require('mysql');
+var connection = require('express-myconnection');
 var bodyParser = require('body-parser');
 
 var usuarioController = require('./controllers/usuario');
 
 var config = require('./config.json');
-
-// Connect to beerlocker MongoDB
-mongoose.connect(config.bd.url);
 
 // Create our Express application
 var app = express();
@@ -16,6 +14,18 @@ var app = express();
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+
+/** MYSQL **/
+
+app.use(
+    connection(mysql, {
+        host: config.bd.host,
+        port: config.bd.port,
+        user: config.bd.user,
+        password: config.bd.password,
+        database: config.bd.database
+    }, 'request')
+);
 
 /** ROUTES **/
 

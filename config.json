@@ -3,6 +3,10 @@
         "port": 3001
     },
     "bd": {
-        "url": "mongodb://localhost:27017/instaservice"
+        "host": "localhost",
+        "port": 3306,
+        "user": "root",
+        "password": "masterkey",
+        "database": "instaservice"
     }
 }

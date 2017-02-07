@@ -1,61 +1,94 @@
-var Usuario = require('../models/usuario');
-
-
-// Cria um novo usuario
-exports.postUsuarios = function(req, res) {
-    var usuario = new Usuario(req.body);
-
-    usuario.save(function(err) {
-        if (err)
-            res.status(400).send(err)
-
-        res.json({ message: "Usuário adicionado com sucesso!" });
-    });
-};
-
 // Lista todos os usuarios
 exports.getUsuarios = function(req, res) {
-    Usuario.find(function(err, usuarios) {
+    req.getConnection(function(err, connection) {
         if (err)
             res.status(400).send(err);
 
-        res.json(usuarios);
+        connection.query('SELECT * FROM Usuario', function(err, rows) {
+            if (err)
+                res.status(400).send(err);
+
+            res.json(rows);
+        });
+    });
+};
+
+// Cria um novo usuario
+exports.postUsuarios = function(req, res) {
+    req.getConnection(function(err, connection) {
+        if (err)
+            res.status(400).send(err);
+
+        var data = req.body;
+        connection.query('INSERT INTO Usuario SET ? ', data, function(err, rows) {
+            if (err)
+                res.status(400).send(err);
+
+            res.json({'message': 'Usuário adicionado com sucesso!'});
+        });
     });
 };
 
 exports.getUsuario = function(req, res) {
-    Usuario.findById(req.params.id, function(err, usuario) {
+    req.getConnection(function(err, connection) {
         if (err)
             res.status(400).send(err);
 
-        res.json(usuario);
+        connection.query('SELECT * FROM Usuario WHERE id = ?', [req.params.id], function(err, rows) {
+            if (err)
+                res.status(400).send(err);
+
+            if (rows.length != 1)
+                res.status(404)
+
+            res.json(rows[0]);
+        });
     });
 };
 
 // Altera um usuario
 exports.putUsuario = function(req, res) {
-    // Procura o usuario específico
-    Usuario.findById(req.params.id, function(err, usuario) {
+    req.getConnection(function(err, connection) {
         if (err)
             res.status(400).send(err);
 
-        usuario.set(req.body);
-        usuario.save(function(err) {
+        connection.query('UPDATE Usuario SET ? WHERE id = ?', [req.body, req.params.id], function(err, rows) {
             if (err)
                 res.status(400).send(err);
 
-            res.json(usuario);
+            res.json(rows);
         });
     });
 };
 
 // Deleta o usuario
 exports.deleteUsuario = function(req, res) {
-    Usuario.findByIdAndRemove(req.params.id, req.body, function(err, usuario) {
+    req.getConnection(function(err, connection) {
         if (err)
             res.status(400).send(err);
 
-        res.json(usuario);
+        connection.beginTransaction(function(err) {
+            if (err)
+                res.status(400).send(err);
+
+            connection.query('DELETE FROM Usuario WHERE id = ?', [req.params.id], function(err, rows) {
+                if (err) {
+                    connection.rollback(function() {
+                        res.status(400).send(err);
+                    });
+                }
+
+                connection.commit(function(err) {
+                    if (err) {
+                        connection.rollback(function() {
+                            res.status(400).send(err);
+                        });
+                    }
+
+                    res.json({ message: 'Usuário excluído com sucesso!' });
+                });
+            });
+        });
     });
 };
 
