@@ -8,5 +8,8 @@
         "user": "root",
         "password": "masterkey",
         "database": "instaservice"
+    },
+    "apis": {
+        "usuarios": "http://localhost:3001/"
     }
 }
