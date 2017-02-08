@@ -10,6 +10,7 @@
         "database": "instaservice"
     },
     "apis": {
-        "usuarios": "http://localhost:3001/"
+        "usuarios": "http://localhost:3001/",
+        "fotos": "http://localhost:3002/"
     }
 }
