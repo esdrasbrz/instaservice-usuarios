@@ -10,7 +10,7 @@ exports.getUsuarios = function(req, res) {
         if (err)
             res.status(400).send(err);
 
-        connection.query('SELECT * FROM Usuario', function(err, rows) {
+        connection.query('SELECT id, username, nome, bio FROM Usuario', function(err, rows) {
             if (err)
                 res.status(400).send(err);
 
@@ -54,14 +54,15 @@ exports.getUsuario = function(req, res) {
         if (err)
             res.status(400).send(err);
 
-        connection.query('SELECT * FROM Usuario WHERE id = ?', [req.params.id], function(err, rows) {
+        connection.query('SELECT id, username, nome, bio FROM Usuario WHERE id = ?', [req.params.id], function(err, rows) {
             if (err)
                 res.status(400).send(err);
 
             if (rows.length != 1)
                 res.status(404)
 
-            res.json(rows[0]);
+            var usuario = rows[0];
+            res.json(usuario);
         });
     });
 };
@@ -73,6 +74,10 @@ exports.putUsuario = function(req, res) {
             res.status(400).send(err);
 
         var data = req.body;
+
+        // verifica se o usuario não pode alterar
+        if (req.params.id != req.user.id)
+            res.status(401).send();
 
         // aplica o hash na senha se necessário
         bcrypt.genSalt(5, function(err, salt) {
@@ -86,7 +91,7 @@ exports.putUsuario = function(req, res) {
 
                     data.password = hash;
 
-                    connection.query('UPDATE Usuario SET ? WHERE id = ?', [data, req.params.id], function(err, rows) {
+                    connection.query('UPDATE Usuario SET ? WHERE id = ? and id = ?', [data, req.params.id], function(err, rows) {
                         if (err)
                             res.status(400).send(err);
 
@@ -94,7 +99,7 @@ exports.putUsuario = function(req, res) {
                     });
                 });
             } else {
-                connection.query('UPDATE Usuario SET ? WHERE id = ?', [data, req.params.id], function(err, rows) {
+                connection.query('UPDATE Usuario SET ? WHERE id = ? and id = ?', [data, req.params.id, req.user.id], function(err, rows) {
                     if (err)
                         res.status(400).send(err);
 
@@ -110,6 +115,10 @@ exports.deleteUsuario = function(req, res) {
     req.getConnection(function(err, connection) {
         if (err)
             res.status(400).send(err);
+
+        // verifica se o usuario não pode excluir
+        if (req.params.id != req.user.id)
+            res.status(401).send();
 
         connection.beginTransaction(function(err) {
             if (err)
@@ -129,7 +138,7 @@ exports.deleteUsuario = function(req, res) {
                         });
                     }
 
-                    res.json({ message: 'Usuário excluído com sucesso!' });
+                    res.json(rows);
                 });
             });
         });
@@ -156,6 +165,7 @@ exports.checkUsuario = function(req, res) {
                         res.status(400).send(err);
 
                     if (isMatch) {
+                        delete usuario['password'];
                         res.json({ auth: true, usuario: usuario });
                     } else {
                         res.json({ auth: false });

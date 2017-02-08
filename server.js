@@ -7,6 +7,9 @@ var bodyParser = require('body-parser');
 var usuarioController = require('./controllers/usuario');
 var arestaController = require('./controllers/aresta');
 
+var passport = require('passport')
+var authController = require('./controllers/auth');
+
 var config = require('./config.json');
 
 // Create our Express application
@@ -28,6 +31,9 @@ app.use(
     }, 'request')
 );
 
+// Passport para autenticação
+app.use(passport.initialize());
+
 /** ROUTES **/
 
 // Create our express router
@@ -35,29 +41,29 @@ var router = express.Router();
 
 router.route('/usuarios')
     .post(usuarioController.postUsuarios)
-    .get(usuarioController.getUsuarios);
+    .get(authController.isAuthenticated, usuarioController.getUsuarios);
 
 router.route('/usuarios/:id')
-    .get(usuarioController.getUsuario)
-    .put(usuarioController.putUsuario)
-    .delete(usuarioController.deleteUsuario);
+    .get(authController.isAuthenticated, usuarioController.getUsuario)
+    .put(authController.isAuthenticated, usuarioController.putUsuario)
+    .delete(authController.isAuthenticated, usuarioController.deleteUsuario);
 
 router.route('/usuarios/:id/seguindo')
-    .get(usuarioController.getSeguindo);
+    .get(authController.isAuthenticated, usuarioController.getSeguindo);
 
 router.route('/usuarios/:id/seguidores')
-    .get(usuarioController.getSeguidores);
+    .get(authController.isAuthenticated, usuarioController.getSeguidores);
 
 router.route('/usuarios/check')
     .post(usuarioController.checkUsuario);
 
 
 router.route('/arestas')
-    .get(arestaController.getArestas);
+    .get(authController.isAuthenticated, arestaController.getArestas);
 
 router.route('/arestas/:origem/:destino/')
-    .post(arestaController.postAresta)
-    .delete(arestaController.deleteAresta);
+    .post(authController.isAuthenticated, arestaController.postAresta)
+    .delete(authController.isAuthenticated, arestaController.deleteAresta);
 
 // Register all our router with /api
 app.use('/api', router);
