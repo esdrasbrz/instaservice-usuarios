@@ -4,6 +4,8 @@ var cors = require('cors');
 var mysql = require('mysql');
 var connection = require('express-myconnection');
 var bodyParser = require('body-parser');
+var https = require('https');
+var fs = require('fs');
 
 var usuarioController = require('./controllers/usuario');
 var arestaController = require('./controllers/aresta');
@@ -77,4 +79,9 @@ var port = config.server.port;
 
 // Start the server
 app.listen(port);
+/*https.createServer({
+    key: fs.readFileSync('certificate/key.pem'),
+    cert: fs.readFileSync('certificate/cert.pem'),
+}, app).listen(port);*/
+
 console.log('Listening: ' + port);
