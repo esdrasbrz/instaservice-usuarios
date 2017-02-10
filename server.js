@@ -1,5 +1,6 @@
 // Get the packages we need
 var express = require('express');
+var cors = require('cors');
 var mysql = require('mysql');
 var connection = require('express-myconnection');
 var bodyParser = require('body-parser');
@@ -18,6 +19,8 @@ var app = express();
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+
+app.use(cors());
 
 /** MYSQL **/
 
