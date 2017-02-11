@@ -76,12 +76,13 @@ app.use('/api', router);
 
 // Use environment defined port or 3000
 var port = config.server.port;
+var ip = config.server.ip;
 
 // Start the server
-app.listen(port);
+app.listen(port, ip);
 /*https.createServer({
     key: fs.readFileSync('certificate/key.pem'),
     cert: fs.readFileSync('certificate/cert.pem'),
 }, app).listen(port);*/
 
-console.log('Listening: ' + port);
+console.log('Listening: ' + ip + ":" + port);
