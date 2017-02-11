@@ -91,7 +91,7 @@ exports.putUsuario = function(req, res) {
 
                     data.password = hash;
 
-                    connection.query('UPDATE Usuario SET ? WHERE id = ? and id = ?', [data, req.params.id], function(err, rows) {
+                    connection.query('UPDATE Usuario SET ? WHERE id = ? and id = ?', [data, req.params.id, req.user.id], function(err, rows) {
                         if (err)
                             res.status(400).send(err);
 
