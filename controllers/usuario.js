@@ -181,7 +181,7 @@ exports.searchUsuario = function(req, res) {
         if (err)
             res.status(400).send(err);
 
-        connection.query('SELECT * FROM Usuario WHERE username like "%' + req.params.username + '%"', function(err, rows) {
+        connection.query('SELECT id, username, nome, bio FROM Usuario WHERE username like "%' + req.params.username + '%"', function(err, rows) {
             if (err)
                 res.status(400).send(err);
 
