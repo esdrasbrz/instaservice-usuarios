@@ -176,6 +176,19 @@ exports.checkUsuario = function(req, res) {
     });
 };
 
+exports.searchUsuario = function(req, res) {
+    req.getConnection(function(err, connection) {
+        if (err)
+            res.status(400).send(err);
+
+        connection.query('SELECT * FROM Usuario WHERE username like "%' + req.params.username + '%"', function(err, rows) {
+            if (err)
+                res.status(400).send(err);
+
+            res.json(rows);
+        });
+    });
+};
 
 // retorna todos os usuários que são seguidos
 exports.getSeguindo = function(req, res) {

@@ -47,6 +47,9 @@ router.route('/usuarios')
     .post(usuarioController.postUsuarios)
     .get(authController.isAuthenticated, usuarioController.getUsuarios);
 
+router.route('/usuarios/:username/search')
+    .get(authController.isAuthenticated, usuarioController.searchUsuario);
+
 router.route('/usuarios/:id')
     .get(authController.isAuthenticated, usuarioController.getUsuario)
     .put(authController.isAuthenticated, usuarioController.putUsuario)
