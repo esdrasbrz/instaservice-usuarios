@@ -239,7 +239,7 @@ exports.getCountSeguindo = function(req, res) {
         if (err)
             res.status(400).send(err);
 
-        var sql = 'SELECT count(u.id) FROM Usuario u, ArestaUsuario a ' +
+        var sql = 'SELECT count(*) as qtd FROM Usuario u, ArestaUsuario a ' +
                   'WHERE a.origem = ? and u.id = a.destino ';
 
         connection.query(sql, [req.params.id], function(err, rows) {
