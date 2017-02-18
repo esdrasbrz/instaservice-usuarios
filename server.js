@@ -55,8 +55,11 @@ router.route('/usuarios/:id')
     .put(authController.isAuthenticated, usuarioController.putUsuario)
     .delete(authController.isAuthenticated, usuarioController.deleteUsuario);
 
-router.route('/usuarios/:id/seguindo')
+router.route('/usuarios/:id/seguindo/:tam_pag/:pag')
     .get(authController.isAuthenticated, usuarioController.getSeguindo);
+
+router.route('/usuarios/:id/seguindo/count')
+    .get(authController.isAuthenticated, usuarioController.getCountSeguindo);
 
 router.route('/usuarios/:id/seguidores')
     .get(authController.isAuthenticated, usuarioController.getSeguidores);

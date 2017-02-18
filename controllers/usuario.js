@@ -210,8 +210,39 @@ exports.getSeguindo = function(req, res) {
         if (err)
             res.status(400).send(err);
 
-        connection.query('SELECT u.id, u.username, u.nome, u.bio FROM Usuario u, ArestaUsuario a ' +
-            'WHERE a.origem = ? and u.id = a.destino', [req.params.id], function(err, rows) {
+        // seta o limit e offset com base no tamanho da página e qual página pegar
+        var tam_pag = req.params.tam_pag;
+        var pag = req.params.pag;
+        var offset = tam_pag * (pag - 1);
+
+        var sql = 'SELECT u.id, u.username, u.nome, u.bio FROM Usuario u, ArestaUsuario a ' +
+                  'WHERE a.origem = ? and u.id = a.destino ';
+
+        if (offset > 0) {
+            sql += "LIMIT " + offset + "," + tam_pag;
+        } else {
+            sql += "LIMIT " + tam_pag;
+        }
+
+        connection.query(sql, [req.params.id], function(err, rows) {
+            if (err)
+                res.status(400).send(err);
+
+            res.json(rows);
+        });
+    });
+};
+
+// retorna a quantidade de todos os usuários que são seguidos
+exports.getCountSeguindo = function(req, res) {
+    req.getConnection(function(err, connection) {
+        if (err)
+            res.status(400).send(err);
+
+        var sql = 'SELECT count(u.id) FROM Usuario u, ArestaUsuario a ' +
+                  'WHERE a.origem = ? and u.id = a.destino ';
+
+        connection.query(sql, [req.params.id], function(err, rows) {
             if (err)
                 res.status(400).send(err);
 
