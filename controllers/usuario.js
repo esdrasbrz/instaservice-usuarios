@@ -181,7 +181,21 @@ exports.searchUsuario = function(req, res) {
         if (err)
             res.status(400).send(err);
 
-        connection.query('SELECT id, username, nome, bio FROM Usuario WHERE id != ? AND username like "%' + req.params.username + '%"', [req.user.id], function(err, rows) {
+        // seta o limit e offset com base no tamanho da página e qual página pegar
+        var tam_pag = req.params.tam_pag;
+        var pag = req.params.pag;
+        var offset = tam_pag * (pag - 1);
+
+        var sql = 'SELECT id, username, nome, bio FROM Usuario ' +
+                  'WHERE id != ? AND username LIKE "%' + req.params.username + '%" ';
+
+        if (offset > 0) {
+            sql += "LIMIT " + offset + "," + tam_pag;
+        } else {
+            sql += "LIMIT " + tam_pag;
+        }
+
+        connection.query(sql, [req.user.id], function(err, rows) {
             if (err)
                 res.status(400).send(err);
 
