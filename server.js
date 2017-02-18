@@ -61,6 +61,10 @@ router.route('/usuarios/:id/seguindo/:tam_pag/:pag')
 router.route('/usuarios/:id/seguindo/count')
     .get(authController.isAuthenticated, usuarioController.getCountSeguindo);
 
+router.route('/usuarios/:id/seguindo/')
+    .get(authController.isAuthenticated, usuarioController.getSeguindoAll);
+
+
 router.route('/usuarios/:id/seguidores')
     .get(authController.isAuthenticated, usuarioController.getSeguidores);
 

@@ -233,6 +233,24 @@ exports.getSeguindo = function(req, res) {
     });
 };
 
+// retorna todos os usuários que são seguidos pelo usuário logado
+exports.getSeguindoAll = function(req, res) {
+    req.getConnection(function(err, connection) {
+        if (err)
+            res.status(400).send(err);
+
+        var sql = 'SELECT u.id FROM Usuario u, ArestaUsuario a ' +
+                  'WHERE a.origem = ? and u.id = a.destino ';
+
+        connection.query(sql, [req.params.id], function(err, rows) {
+            if (err)
+                res.status(400).send(err);
+
+            res.json(rows);
+        });
+    });
+};
+
 // retorna a quantidade de todos os usuários que são seguidos
 exports.getCountSeguindo = function(req, res) {
     req.getConnection(function(err, connection) {
